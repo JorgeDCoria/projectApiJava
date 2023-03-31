@@ -14,7 +14,11 @@ const loadUsers = async () => {
   });
   const usuarios = await request.json();
   let textUsuarios = "";
+
+
+
   usuarios.forEach((user) => {
+   let btnDelete = '<a href="#" class="btn btn-danger btn-circle" onclick="deleteUser('+ user.id +')"> <i class="fas fa-trash"></i></a>';
     textUsuarios += ` 
     <tr>
      <td> ${user.id} </td>
@@ -22,12 +26,10 @@ const loadUsers = async () => {
      <td>${user.apellido}</td>
      <td>${user.email}</td>
      <td>${user.telefono}</td>
-     <td>61456132</td>
      <td>
-        <a href="#" class="btn btn-danger btn-circle">
-            <i class="fas fa-trash"></i>
-        </a>
-        <a href="#" class="btn btn-info btn-circle">
+        ${btnDelete}
+        <a href="#"
+            class="btn btn-info btn-circle">
             <i class="fas fa-info-circle"></i>
         </a>
       </td>
@@ -36,3 +38,19 @@ const loadUsers = async () => {
   document.querySelector("#usuarios tbody").outerHTML = textUsuarios;
   console.log(textUsuarios);
 };
+
+const deleteUser = async (id) => {
+    if(confirm("Esta seguro de eliminar el usuario ?")){
+        await fetch(`api/usuario/${id}`, {
+         method: "DELETE",
+         headers: {
+         "Acepted": "application/json",
+         "Content-Type": "application/json",
+        },
+    });
+
+    }else{
+        alert("operacion cancelada")
+    }
+
+}
