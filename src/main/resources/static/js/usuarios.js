@@ -48,6 +48,7 @@ const deleteUser = async (id) => {
          "Content-Type": "application/json",
         },
     });
+    location.reload();
 
     }else{
         alert("operacion cancelada")

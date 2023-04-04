@@ -1,5 +1,7 @@
 package fi.unju.edu.ar.myProject.dao;
 
+import de.mkammerer.argon2.Argon2;
+import de.mkammerer.argon2.Argon2Factory;
 import fi.unju.edu.ar.myProject.model.Usuario;
 import jakarta.persistence.EntityManager;
 import jakarta.persistence.PersistenceContext;
@@ -28,4 +30,24 @@ public class UsuarioDaoImp implements UsuarioDao{
     Usuario usuario = entityManager.find(Usuario.class, id);
     entityManager.remove(usuario);
   }
+
+  @Override
+  public void adduser(Usuario usuario) {
+    Argon2 argon = Argon2Factory.create(Argon2Factory.Argon2Types.ARGON2id);
+    String hash = argon.hash(1, 1024,1, usuario.getPassword());
+    usuario.setPassword(hash);
+    entityManager.merge(usuario);
+  }
+
+  @Override
+  public Boolean verifyCredentials(Usuario usuario) {
+    String query = "FROM Usuario WHERE  email = :email";
+    List<Usuario> usuarios =  entityManager.createQuery(query)
+            .setParameter("email", usuario.getEmail())
+            .getResultList();
+    if(usuarios.isEmpty()) return false;
+    Argon2 argon = Argon2Factory.create(Argon2Factory.Argon2Types.ARGON2id);
+    return argon.verify(usuarios.get(0).getPassword(), usuario.getPassword());
+  }
+
 }
