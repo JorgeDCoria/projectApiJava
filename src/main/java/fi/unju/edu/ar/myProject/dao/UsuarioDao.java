@@ -11,5 +11,5 @@ public interface UsuarioDao {
 
   void adduser(Usuario usuario);
 
-  Boolean verifyCredentials(Usuario usuario);
+  Usuario verifyCredentials(Usuario usuario);
 }
